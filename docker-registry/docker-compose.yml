@@ -1,0 +1,24 @@
+# name:    docker-registry
+# descr.:  Docker registry
+# note:    TCP/5000
+# icon:    
+version: '3.6'
+services:
+  web:
+    image: registry:2
+    restart: unless-stopped
+    ports:
+      - 5000:5000
+    volumes:
+      - type: volume
+        source: registry_data
+        target: /var/lib/registry
+        volume: 
+          nocopy: true
+volumes:
+  registry_data:
+    driver_opts:
+      type: nfs
+      o: addr=nas.home,nolock,rw,soft,nfsvers=4
+      device: :/export/docker-volumes/registry_data
+  

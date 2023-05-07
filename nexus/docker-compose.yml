@@ -1,0 +1,23 @@
+# name:    nexus-nfs
+# descr.:  Nexus
+# note:    TCP/8081
+# icon:    
+version: '3.6'
+services:
+  nexus:
+    image: sonatype/nexus3
+    restart: always
+    ports:
+      - 8081:8081
+    volumes:
+      - type: volume
+        source: nexus_data
+        target: /nexus-data
+        volume: 
+          nocopy: true
+volumes:
+  nexus_data:
+    driver_opts:
+      type: nfs
+      o: addr=nas.home,nolock,rw,soft,nfsvers=4
+      device: :/export/docker-volumes/nexus_data

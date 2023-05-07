@@ -1,0 +1,45 @@
+version: '3.6'
+services:
+  web:
+    image: gitlab/gitlab-ce:latest
+    restart: always
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
+    ports:
+      - 8480:80
+      - 8443:443
+      - 8422:22
+    volumes:
+      - type: volume
+        source: data
+        target: /etc/gitlab
+        volume: 
+          nocopy: true
+      - type: volume
+        source: logs
+        target: /var/log/gitlab
+        volume: 
+          nocopy: true
+      - type: volume
+        source: config
+        target: /var/opt/gitlab
+        volume: 
+          nocopy: true
+volumes:
+  data:
+    driver_opts:
+      type: nfs
+      o: addr=nas.home,nolock,rw,soft,nfsvers=4
+      device: :/export/docker-volumes/gitlab_data
+  logs:
+    driver_opts:
+      type: nfs
+      o: addr=nas.home,nolock,rw,soft,nfsvers=4
+      device: :/export/docker-volumes/gitlab_logs
+  config:
+    driver_opts:
+      type: nfs
+      o: addr=nas.home,nolock,rw,soft,nfsvers=4
+      device: :/export/docker-volumes/gitlab_config

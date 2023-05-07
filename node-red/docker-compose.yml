@@ -1,0 +1,24 @@
+# name:    node-red
+# descr.:  Node RED
+# note:    TCP/8153
+# icon:    
+version: '3.6'
+services:
+  web:
+    image: nodered/node-red
+    restart: unless-stopped
+    ports:
+      - 1880:1880
+    volumes:
+      - type: volume
+        source: nodered_data
+        target: /data
+        volume: 
+          nocopy: true
+volumes:
+  nodered_data:
+    driver_opts:
+      type: nfs
+      o: addr=nas.home,nolock,rw,soft,nfsvers=4
+      device: :/export/docker-volumes/nodered_data
+  

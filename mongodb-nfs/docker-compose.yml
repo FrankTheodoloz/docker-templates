@@ -1,0 +1,48 @@
+# name:    mongodb-nfs
+# descr.:  MongoDB
+# note:    TCP/57017
+# icon:    http://nas/files/mongodb.svg
+version: '3.6'
+services:
+  db:
+    container_name: mongodb
+    image: mongo:latest
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - 57017:27017
+    volumes:
+      - type: volume
+        source: mongodb_db
+        target: /data/db
+        volume: 
+          nocopy: true
+      - type: volume
+        source: mongodb_configdb
+        target: /configdb
+        volume: 
+          nocopy: true
+  mongo-express:
+    container_name: mongo-express
+    image: mongo-express:latest
+    restart: always
+    ports:
+      - 58081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://admin:1234@u22-docker:57017/
+volumes:
+  mongodb_db:
+    driver_opts:
+      type: nfs
+      o: addr=nas.home,nolock,rw,soft,nfsvers=4
+      device: :/export/docker-volumes/mongodb_db
+  mongodb_configdb:
+    driver_opts:
+      type: nfs
+      o: addr=nas.home,nolock,rw,soft,nfsvers=4
+      device: :/export/docker-volumes/mongodb_configdb
+  

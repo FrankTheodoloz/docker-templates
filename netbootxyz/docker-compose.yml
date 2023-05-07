@@ -1,0 +1,39 @@
+version: "2.1"
+services:
+  netbootxyz:
+    image: lscr.io/linuxserver/netbootxyz:latest
+    container_name: netbootxyz
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - MENU_VERSION=1.9.9 #optional
+      - PORT_RANGE=30000:30010 #optional
+      - SUBFOLDER=/ #optional
+    volumes:
+      - type: volume
+        source: netboot_config
+        target: /config
+        volume: 
+          nocopy: true
+      - type: volume
+        source: netboot_assets
+        target: /assets
+        volume: 
+          nocopy: true
+    ports:
+      - 3000:3000
+      - 69:69/udp
+      - 8080:80 #optional
+    restart: unless-stopped
+volumes:
+  netboot_config:
+    driver_opts:
+      type: nfs
+      o: addr=nas.home,nolock,rw,soft,nfsvers=4
+      device: :/export/docker-volumes/netboot_config
+  netboot_assets:
+    driver_opts:
+      type: nfs
+      o: addr=nas.home,nolock,rw,soft,nfsvers=4
+      device: :/export/docker-volumes/netboot_assets

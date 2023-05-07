@@ -1,0 +1,36 @@
+version: '3'
+services:
+  mail:
+    image: docker.io/mailserver/docker-mailserver:latest
+    container_name: mailserver
+    deploy:
+      placement:
+        constraints:
+        - node.role == worker
+      replicas: 1
+      restart_policy:
+        condition: any
+    hostname: mail
+    domainname: home.16d.ch
+    environment:
+      ENABLE_CLAMAV: '1'
+      ENABLE_POSTGREY: '1'
+      SPAMASSASSIN_SPAM_TO_INBOX: '1'
+      ENABLE_SPAMASSASSIN: '1'
+      ENABLE_FAIL2BAN: '1'
+    ports:
+    - 25:25
+    - 587:587
+    - 993:993
+    volumes:
+    - mailserver_data:/var/mail/
+    - mailserver_state:/var/mail-state/
+    - mailserver_config:/tmp/docker-mailserver/
+    - /etc/localtime:/etc/localtime:ro
+volumes:
+  mailserver_config:
+    external: true
+  mailserver_state:
+    external: true
+  mailserver_data:
+    external: true

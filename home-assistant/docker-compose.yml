@@ -1,0 +1,25 @@
+version: '3.6'
+services:
+  web:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Zurich
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
+    ports:
+      - 8123:8123
+    volumes:
+      - type: volume
+        source: config
+        target: /config
+        volume: 
+          nocopy: true
+volumes:
+  config:
+    driver_opts:
+      type: nfs
+      o: addr=nas.home,nolock,rw,soft,nfsvers=4
+      device: :/export/docker-volumes/homeassistant_config

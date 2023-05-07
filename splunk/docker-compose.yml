@@ -1,0 +1,37 @@
+version: '3.6'
+services:
+  web:
+    image: splunk/splunk:latest
+    restart: always
+    deploy:
+      placement:
+        constraints:
+        - node.role == worker
+    ports:
+      - 8000:8000
+    environment:
+      SPLUNK_START_ARGS: --accept-license
+      SPLUNK_PASSWORD: 1234..aa
+    shm_size: 256m
+    volumes:
+      - type: volume
+        source: splunk_etc
+        target: /opt/splunk/etc
+        volume: 
+          nocopy: true
+      - type: volume
+        source: splunk_var
+        target: /opt/splunk/var
+        volume: 
+          nocopy: true
+volumes:
+  splunk_etc:
+    driver_opts:
+      type: nfs
+      o: addr=nas.home,nolock,rw,soft,nfsvers=4
+      device: :/export/docker-volumes/splunk_etc
+  splunk_var:
+    driver_opts:
+      type: nfs
+      o: addr=nas.home,nolock,rw,soft,nfsvers=4
+      device: :/export/docker-volumes/splunk_var

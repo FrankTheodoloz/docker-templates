@@ -1,0 +1,33 @@
+# name:    gocd-nfs
+# descr.:  GoCD
+# note:    TCP/8153
+# icon:    https://raw.githubusercontent.com/grundic/yagocd/master/img/gocd_logo.png
+version: '3.6'
+services:
+  web:
+    image: gocd/gocd-server:v23.1.0
+    restart: always
+    ports:
+      - 8153:8153
+    volumes:
+      - type: volume
+        source: gocd_data
+        target: /godata
+        volume: 
+          nocopy: true
+      - type: volume
+        source: gocd_home
+        target: /home/go
+        volume: 
+          nocopy: true
+volumes:
+  gocd_data:
+    driver_opts:
+      type: nfs
+      o: addr=nas.home,nolock,rw,soft,nfsvers=4
+      device: :/export/docker-volumes/gocd_data
+  gocd_home:
+    driver_opts:
+      type: nfs
+      o: addr=nas.home,nolock,rw,soft,nfsvers=4
+      device: :/export/docker-volumes/gocd_home

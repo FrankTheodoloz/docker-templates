@@ -1,0 +1,36 @@
+version: '3.6'
+services:
+  db:
+    container_name: mongodb
+    image: mongo:latest
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+      PGDATA: /var/lib/postgresql/data
+    ports:
+      - "57017:27017"
+    volumes:
+      - type: volume
+        source: mongodb_db
+        target: /data/db
+        volume: 
+          nocopy: true
+      - type: volume
+        source: mongodb_configdb
+        target: /configdb
+        volume: 
+          nocopy: true
+volumes:
+  mongodb_db:
+    driver_opts:
+      type: nfs
+      o: addr=nas.home,nolock,rw,soft,nfsvers=4
+      device: :/export/docker-volumes/mongodb_db
+  mongodb_configdb:
+    driver_opts:
+      type: nfs
+      o: addr=nas.home,nolock,rw,soft,nfsvers=4
+      device: :/export/docker-volumes/mongodb_configdb
+  

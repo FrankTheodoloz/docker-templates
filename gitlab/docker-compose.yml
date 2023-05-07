@@ -1,0 +1,29 @@
+# name:    gitlab
+# Descr.:  GitLab
+# note:    TCP/8480,8443,8422
+# icon:    http://nas/files/gitlab.png
+version: '3.6'
+services:
+  web:
+    image: gitlab/gitlab-ce:latest
+    restart: always
+    deploy:
+      placement:
+        constraints:
+        - node.role == worker
+    ports:
+      - 8480:80
+      - 8443:443
+      - 8422:22
+    volumes:
+      - gitlab_data:/etc/gitlab
+      - gitlab_logs:/var/log/gitlab
+      - gitlab_config:/var/opt/gitlab
+    shm_size: 256m
+volumes:
+  gitlab_data:
+    external: true
+  gitlab_config:
+    external: true
+  gitlab_logs:
+    external: true

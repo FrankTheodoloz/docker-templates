@@ -1,0 +1,31 @@
+# name:    freqtrade-nfs
+# descr.:  Freqtrade
+# note:    TCP/8080
+# icon:    
+version: '3.8'
+services:
+  freqtrade:
+    container_name: freqtrade
+    image: freqtradeorg/freqtrade:stable
+    restart: unless-stopped
+
+    ports:
+      - 8080:8080
+    volumes:
+      - type: volume
+        source: freqtade_data
+        target: /freqtrade/user_data
+        volume: 
+          nocopy: true
+volumes:
+  freqtade_data:
+    driver_opts:
+      type: nfs
+      o: addr=nas.home,nolock,rw,soft,nfsvers=4
+      device: :/export/docker-volumes/freqtrade_data
+command: >
+  trade
+  --logfile /freqtrade/user_data/logs/freqtrade.log
+  --db-url sqlite:////freqtrade/user_data/tradesv3.sqlite
+  --config /freqtrade/user_data/config.json
+  --strategy SampleStrategy
